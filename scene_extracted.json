@@ -1,0 +1,24 @@
+{
+  "scenes": [
+    {
+      "scene_id": 1,
+      "scene_kr": "비 오는 아침, 버스를 기다리며 하늘을 올려다보는 모습",
+      "prompt_en": "A person looking up at the rainy sky while waiting for a bus, wide shot, eye-level, soft lighting, watercolor diary illustration style"
+    },
+    {
+      "scene_id": 2,
+      "scene_kr": "작은 카페에 들어가 따뜻한 라떼를 주문하는 장면",
+      "prompt_en": "Ordering a warm latte in a small cafe, medium shot, eye-level, soft lighting, watercolor diary illustration style"
+    },
+    {
+      "scene_id": 3,
+      "scene_kr": "창가 자리에서 낡은 지도를 발견하는 순간",
+      "prompt_en": "Discovering an old map at a window seat, close-up, eye-level, soft lighting, watercolor diary illustration style"
+    },
+    {
+      "scene_id": 4,
+      "scene_kr": "비가 그치기 시작할 무렵, 여행을 결심하는 장면",
+      "prompt_en": "Deciding to go on a trip as the rain begins to let up, medium shot, eye-level, soft lighting, watercolor diary illustration style"
+    }
+  ]
+}
