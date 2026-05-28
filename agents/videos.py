@@ -9,15 +9,7 @@ load_dotenv()
 client = OpenAI()
 
 
-aria={
-    "name":"Aria",
-    "role":"젊은 남성 AI PT, 헬스 트레이너",
-    "appearance": "짧은 검은 머리, 갈색 눈, 친근한 미소, 태닝한 피부",
-    "outfit": "은은한 파란색 포인트가 들어간 흰색 트레이닝복",
-    "mood": "친근하고, 전문적이고, 상냥함"
-}
-
-def agent_designer(character: dict) -> str:
+def _agent_designer(character: dict) -> str:
     """디자이너: 캐릭터 dict -> 시각화 프롬프트 문자열로 반환"""
     # return f"{character['appearance']}, cinematic lighting, photorealistic"
     appearance=(
@@ -28,7 +20,7 @@ def agent_designer(character: dict) -> str:
     shot = "bust shot, 50mm lens, eye-level, soft key light, cinematic lighting, photorealistic"
     return f"{appearance, shot}"
 
-def agent_photographer(prompt: str) -> str:
+def _agent_photographer(prompt: str) -> str:
     """사진작가: prompt -> 이미지 생성 -> url"""
     # return f"https://example.com/images/{prompt[2:10].replace(' ','_')}.png"
     r = client.images.generate(
@@ -43,7 +35,7 @@ def agent_photographer(prompt: str) -> str:
 
 # agent_photographer(agent_designer(aria))
 
-def agent_video_director(image_b64:str, name:str) -> str:
+def _agent_video_director(image_b64:str, name:str) -> str:
     """영상감독: 이미지 url -> 영상 url"""
     # return f"https://example.com/videos/{name}_intro.mp4"
     camera_work = (
@@ -60,28 +52,8 @@ def agent_video_director(image_b64:str, name:str) -> str:
     )
     return r["video"]["url"]
 
-def character_pipeline(character:dict) -> dict:
-    """파이프라인: 3개의 에이전트를 순서대로 전부 호출"""
-    print(f"캐릭터 카드 제작 시작 : {character['name']}")
-    prompt = agent_designer(character)
-    image_b64 = agent_photographer(prompt)
-    image_bytes = base64.b64decode(image_b64)
-    output_dir = Path("outputs")
-    output_dir.mkdir(exist_ok=True)
-    output_path = output_dir / "aria_04_4.png"
-    output_path.write_bytes(image_bytes)
-    video_url = agent_video_director(image_b64, character["name"])
-    return {
-        "name":character["name"],
-        "image_url": output_dir / "aria_04_4.png",
-        "video_url": video_url
-    }
-    
-# 메소드 체인
-# pd.merge().mean()
-re = character_pipeline(agent_video_director(agent_photographer(agent_designer())))
-    
-def save_video(video_url:str, name:str) -> str:
+
+def _save_video(video_url:str, name:str) -> str:
     """영상 url -> 로컬 저장"""
     output_dir=Path("outputs")
     output_dir.mkdir(exist_ok=True)
@@ -94,10 +66,18 @@ def save_video(video_url:str, name:str) -> str:
     print(f" 저장 경로: {output_path} ({size_kb})KB")
     return str(output_path)
 
-# 실행
-# aria = {"name": "Aria", "appearance":"short black hair, warm brown eyes, friendly smile"}
-card = character_pipeline(aria)
-print(f"{aria['name']} 캐릭터 카드 완성")
-print(f"영상 url: {card['video_url']}")
-
-save_video(card['video_url'], "aria")
+def character_pipeline(character:dict) -> dict:
+    """파이프라인: 3개의 에이전트를 순서대로 전부 호출"""
+    print(f"캐릭터 카드 제작 시작 : {character['name']}")
+    prompt = _agent_designer(character)
+    image_b64 = _agent_photographer(prompt)
+    video_url = _agent_video_director(image_b64, character["name"])
+    video_path = _save_video(video_url, character["name"])
+    return {
+        "name":character["name"],
+        "image_url": image_b64,
+        "video_url": video_url,
+        "video_path": video_path
+    }
+    
+    
